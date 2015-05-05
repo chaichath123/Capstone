@@ -140,7 +140,7 @@ void first_adc() {
         //adc_temp = adc_read();
         //adc_temp = sample2;
         adc_temp = sample2;
-        
+
         /*(adc_temp & (1<0))>>0*/
 
         if (( (adc_temp & (1 << 0))>>0 )== 1) {
@@ -150,22 +150,22 @@ void first_adc() {
         }
         if (( (adc_temp & (1<< 1))>>1 )== 1) {
             RD2 = 1;
-        } else if (( (adc_temp & (1<<1))>>1 )== 1) {
+        } else if (( (adc_temp & (1<<1))>>1 )== 0) {
             RD2 = 0;
         }
         if (( (adc_temp & (1<< 2))>>2 )== 1) {
             RD3 = 1;
-        } else if (( (adc_temp & (1<<2))>>2 )== 1) {
+        } else if (( (adc_temp & (1<<2))>>2 )== 0) {
             RD3 = 0;
         }
         if (( (adc_temp & (1< <3))>>3 )== 1) {
             RD4 = 1;
-        } else if (( (adc_temp & (1<<3))>>3 )== 1) {
+        } else if (( (adc_temp & (1<<3))>>3 )== 0) {
             RD4 = 0;
         }
           if (( (adc_temp & (1<<4))>>4 )== 1) {
             RD5 = 1;
-        } else if (( (adc_temp & (1<<5))>>5 )== 1) {
+        } else if (( (adc_temp & (1<<5))>>5 )== 0) {
             RD5 = 0;
         }
 
@@ -175,29 +175,29 @@ void second_adc() {
         unsigned int adc_temp;
         //adc_temp = adc_read();
         adc_temp = sample;
-        if (( adc_temp << 5 )== 1) {
+        if (( (adc_temp & (1 << 5))>>5 )== 1) {
             RD1 = 1;
-        } else if (( adc_temp << 5 ) == 0) {
+        } else if (( (adc_temp & (1<<5) )>>5 )== 0) {
             RD1 = 0;
         }
-        if (( adc_temp << 6 )== 1) {
+        if (( (adc_temp & (1<< 6))>>6 )== 1) {
             RD2 = 1;
-        } else if (( adc_temp << 6 ) == 0) {
+        } else if (( (adc_temp & (1<<6))>>6 )== 0) {
             RD2 = 0;
         }
-        if (( adc_temp << 7 )== 1) {
+        if (( (adc_temp & (1<< 7))>>7 )== 1) {
             RD3 = 1;
-        } else if (( adc_temp << 7 ) == 0) {
+        } else if (( (adc_temp & (1<<7))>>7 )== 0) {
             RD3 = 0;
         }
-        if (( adc_temp << 8 )== 1) {
+        if (( (adc_temp & (1< <8))>>8 )== 1) {
             RD4 = 1;
-        } else if (( adc_temp << 8 ) == 0) {
+        } else if (( (adc_temp & (1<<8))>>8 )== 0) {
             RD4 = 0;
         }
-          if (( adc_temp << 9 )== 1) {
+          if (( (adc_temp & (1<<9))>>9 )== 1) {
             RD5 = 1;
-        } else if (( adc_temp << 9 ) == 0) {
+        } else if (( (adc_temp & (1<<9))>>9 )== 0) {
             RD5 = 0;
         }
 
@@ -248,7 +248,7 @@ void main() {
                 case 0x3: //get ADC
                     send_mode();//
                     first_adc();
-                    
+
                     while( S == HI){//send first 5
                         
                     }
