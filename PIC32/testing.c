@@ -1,3 +1,11 @@
+/* 	
+	By Chaichath Wiyarand
+	
+	Description:
+  In this galileo, the connection between PIC32 and Galileo will be established. The simple acknowledgement will created using
+  5 data line, instead of 4..
+ */
+ 
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -63,7 +71,15 @@ int openFileForReading(gpio)
     }
     return(fileHandle);  //This file handle will be used in read/write and close operations.
 }
-//open GPIO and set the direction
+
+/*  ---------- O P E N _ G P I O ---------------
+	Description : These steps are implemented using the openGPIO function, 
+				which opens the corresponding file and 
+				returns this file identifier for future reading or writing, 
+				depending on the direction declared.
+				
+	Return: fileHandle or the GPIO
+*/
 int openGPIO(int gpio, int direction)
 {
     //1.set the GPIO
@@ -135,19 +151,33 @@ int openGPIO(int gpio, int direction)
     }
     return(fileHandle);  //This file handle will be used in read/write and close operations.
 }
+/*---------- R E A D _ G P I O --------------- 
+	Description: The GPIO reading logic is as follows.
+	
+	Return: digital value for that GPIO
+*/
 int readGPIO(int fHandle, int gpio)
 {
     int value;
-    fHandle = openFileForReading(gpio);
-    read(fHandle, &value, 1);
-    if('0' == value){
+	//Reopening the file again in read mode, since data was not refreshing.
+    fHandle = openFileForReading(gpio); // open file
+    read(fHandle, &value, 1); //read the digital value from the pin
+    if('0' == value){// if 0
         value = 0;       // Current GPIO status low
-    }else{
+    }else{// else has to be high
         value = 1;       // Current GPIO status high
     }
-    close(fHandle);
+    close(fHandle); // close the file
     return value;
 }
+
+/* ---------- W R I T E _ G P I O --------------- 
+	Description:	Manually set the GPIO of the pin
+				to either 1 or 0;
+	
+	Return nothing
+	
+*/
 int writeGPIO(int fHandle, int val)
 {
     if(val ==  0){
@@ -157,7 +187,11 @@ int writeGPIO(int fHandle, int val)
     }
     return(0);
 }
-/* ---------- G P I O _ I N --------------- */
+/* ---------- G P I O _ I N --------------- 
+	Description: Setting the value for GPIO to READING MODE
+		ready to receive input from PIC	
+	Return nothing
+*/
 void GPIO_IN(void)
 {
 	fileHandleGPIO_4 = openGPIO(GP_4, GPIO_DIRECTION_IN);//set port 4 to receive
@@ -166,7 +200,10 @@ void GPIO_IN(void)
 	fileHandleGPIO_7 = openGPIO(GP_7, GPIO_DIRECTION_IN);//set port 7 to receive
 	fileHandleGPIO_8 = openGPIO(GP_8, GPIO_DIRECTION_IN);//set port 8 to receive 
 }
-/* ---------- G P I O _ I N --------------- */
+/* ---------- G P I O _ I N --------------- 
+	Description: Setting the value for GPIO to WRITING MODE
+		ready to write the output to PIC
+	Return nothing*/
 void GPIO_OUT(void)
 {
 	fileHandleGPIO_4 = openGPIO(GP_4, GPIO_DIRECTION_OUT);//set port 4 to send 
@@ -179,24 +216,26 @@ void GPIO_OUT(void)
 
 void main(){
 	
-	GPIO_IN();
-	unsigned int pin8;
+	GPIO_IN(); // set pin4-8 tp input mode
+	/*Initialization*/
+	unsigned int pin8; 
 	unsigned int pin7;
 	unsigned int pin6;
 	unsigned int pin5;
 	unsigned int pin4;
 	while(1){
-		readGPIO(fileHandleGPIO_4, GP_4);
-		readGPIO(fileHandleGPIO_5, GP_5);
-		readGPIO(fileHandleGPIO_6, GP_6);
-		readGPIO(fileHandleGPIO_7, GP_7);
-		pin4 = readGPIO(fileHandleGPIO_4, GP_4);
-		pin5 = readGPIO(fileHandleGPIO_5, GP_5);
-		pin6 = readGPIO(fileHandleGPIO_6, GP_6);
-		pin7 = readGPIO(fileHandleGPIO_7, GP_7);
-		pin8 = readGPIO(fileHandleGPIO_8, GP_8);
+		readGPIO(fileHandleGPIO_4, GP_4);//get the digital value from GPIO # 4
+		readGPIO(fileHandleGPIO_5, GP_5);//get the digital value from GPIO # 5
+		readGPIO(fileHandleGPIO_6, GP_6);//get the digital value from GPIO # 6
+		readGPIO(fileHandleGPIO_7, GP_7);//get the digital value from GPIO # 7
+		readGPIO(fileHandleGPIO_8, GP_8);//get the digital value from GPIO # 8
+		pin4 = readGPIO(fileHandleGPIO_4, GP_4);//store value into pin4
+		pin5 = readGPIO(fileHandleGPIO_5, GP_5);//store value into pin5
+		pin6 = readGPIO(fileHandleGPIO_6, GP_6);//store value into pin6
+		pin7 = readGPIO(fileHandleGPIO_7, GP_7);//store value into pin7
+		pin8 = readGPIO(fileHandleGPIO_8, GP_8);//store value into pin8
 		
-		
+		//TEST if GPIO are all outputing the correct value
 		printf("%u %u %u %u %u\n", readGPIO(fileHandleGPIO_4, GP_4),readGPIO(fileHandleGPIO_5, GP_5),	readGPIO(fileHandleGPIO_6, GP_6),	readGPIO(fileHandleGPIO_7, GP_7),	readGPIO(fileHandleGPIO_8, GP_8));
 		if(pin4 == 1 && pin5 == 1 && pin6 == 0 && pin7 == 1 && pin8 == 1){
 			printf("HELLO CRUEL WORLD!");
